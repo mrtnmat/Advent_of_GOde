@@ -24,10 +24,10 @@ func main() {
 
 	//compute answer
 	for i, e := range sValues {
-		if e == sValues[(i + 1) % len(sValues)] {
+		if e == sValues[(i+1)%len(sValues)] {
 			nAnswer[0] += uint(e)
 		}
-		if e == sValues[(i + (len(sValues) / 2)) % len(sValues)] {
+		if e == sValues[(i+(len(sValues)/2))%len(sValues)] {
 			nAnswer[1] += uint(e)
 		}
 	}
