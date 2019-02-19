@@ -11,21 +11,21 @@ import (
 )
 
 func main() {
-  var numAnswer int
+	var numAnswer int
 	//open the input file for reading
 	fd, err := os.Open("./input")
 	if err != nil {
 		fmt.Printf("%v\n", err)
 	}
 
-  //make new bufio.reader for the input file
+	//make new bufio.reader for the input file
 	var lineSlice = make([]byte, 1024)
 	rdr := bufio.NewReader(fd)
 
 	for {
-	  //read line
-	  lineSlice, err = rdr.ReadSlice('\n')
-    fmt.Printf("%v\n", err)
+		//read line
+		lineSlice, err = rdr.ReadSlice('\n')
+		fmt.Printf("%v\n", err)
 		if err == io.EOF {
 			break
 		}
@@ -41,13 +41,13 @@ func main() {
 				break
 			}
 		}
-	  //sort answer
-    sort.IntSlice(numSlice).Sort()
-    fmt.Printf("%v\n", numSlice)
-    numAnswer += numSlice[len(numSlice) - 1] - numSlice[0]
-    fmt.Printf("%v - %v\n", numSlice[len(numSlice) - 1], numSlice[0])
+		//sort answer
+		sort.IntSlice(numSlice).Sort()
+		fmt.Printf("%v\n", numSlice)
+		numAnswer += numSlice[len(numSlice)-1] - numSlice[0]
+		fmt.Printf("%v - %v\n", numSlice[len(numSlice)-1], numSlice[0])
 	}
 
 	//print answer
-  fmt.Printf("%v\n", numAnswer)
+	fmt.Printf("%v\n", numAnswer)
 }
