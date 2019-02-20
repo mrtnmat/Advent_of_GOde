@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	var numAnswer int
+	var ansArr [2]int
 	//open the input file for reading
 	fd, err := os.Open("./input")
 	if err != nil {
@@ -25,7 +25,6 @@ func main() {
 	for {
 		//read line
 		lineSlice, err = rdr.ReadSlice('\n')
-		fmt.Printf("%v\n", err)
 		if err == io.EOF {
 			break
 		}
@@ -41,13 +40,26 @@ func main() {
 				break
 			}
 		}
-		//sort answer
+
+		//sort answer and get the diff between largest and smallest
 		sort.IntSlice(numSlice).Sort()
-		fmt.Printf("%v\n", numSlice)
-		numAnswer += numSlice[len(numSlice)-1] - numSlice[0]
-		fmt.Printf("%v - %v\n", numSlice[len(numSlice)-1], numSlice[0])
+		ansArr[0] += numSlice[len(numSlice)-1] - numSlice[0]
+
+		//compute second answer
+	OuterLoop:
+		for i, e := range numSlice {
+			for _, f := range numSlice[i+1:] {
+				if (f % e) == 0 {
+					//fmt.Printf("i: %v, j: %v\n", i, j)
+					//fmt.Printf("e: %v, f: %v f/e: %v\n", e, f, f/e)
+					ansArr[1] += f / e
+					break OuterLoop
+				}
+			}
+		}
 	}
 
 	//print answer
-	fmt.Printf("%v\n", numAnswer)
+	fmt.Printf("The answer to the first part is: %v\n", ansArr[0])
+	fmt.Printf("The answer to the second part is: %v\n", ansArr[1])
 }
