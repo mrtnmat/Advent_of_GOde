@@ -17,25 +17,34 @@ func main() {
 	gr.populate()
 }
 
+func (pGr *grid) computeTile(x, y int) {
+	value := pGr[x-1][y+1] + pGr[x][y+1] + pGr[x+1][y+1] + pGr[x-1][y] + pGr[x][y] + pGr[x+1][y] + pGr[x-1][y-1] + pGr[x][y-1] + pGr[x+1][y-1]
+	pGr[x][y] = value
+}
+
 func (pGr *grid) populate() {
 	x, y := 0, 0        //coordinates
-	d, m, s := 1, 0, 1  //direction, movement size, steps
+	d, m, s := 1, 0, 1  //direction, movement size, square
 	off := gridSize / 2 //offset
+	pGr[x+off][y+off] = 1
+	lastValue := 0
 
-	for s <= nInput {
+	for lastValue < nInput {
 		for 2*x*d <= m {
-			pGr[y+off][x+off] = s
-			if s == nInput {
-				fmt.Printf("x:%v, y:%v, s: %v\n", x, y, s)
+			pGr.computeTile(x+off, y+off)
+			lastValue = pGr[x+off][y+off]
+			if lastValue > nInput {
+				fmt.Printf("x:%v, y:%v, value: %v\n", x, y, lastValue)
 				fmt.Printf("dist:%v\n", manhDist(x, y))
 			}
 			x += d
 			s++
 		}
 		for 2*y*d <= m {
-			pGr[y+off][x+off] = s
-			if s == nInput {
-				fmt.Printf("x:%v, y:%v, s: %v\n", x, y, s)
+			pGr.computeTile(x+off, y+off)
+			lastValue = pGr[x+off][y+off]
+			if lastValue > nInput {
+				fmt.Printf("x:%v, y:%v, value: %v\n", x, y, lastValue)
 				fmt.Printf("dist:%v\n", manhDist(x, y))
 			}
 			y += d
