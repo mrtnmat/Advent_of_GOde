@@ -21,6 +21,7 @@ type (
 	}
 	state struct {
 		fb      fabric
+    patches []patch
 		overlap int
 	}
 )
@@ -29,7 +30,6 @@ func main() {
 	var st state
 	var fb fabric
 	var lines []string
-  var patches []patch
 
 	for i, _ := range fb {
 		for j, _ := range fb[i] {
@@ -37,21 +37,31 @@ func main() {
 		}
 	}
 
-	st = state{fb, 0}
+  st.fb = fb
 
 	lines = strings.Split(input, "\n")
 	for i, _ := range lines {
-    patches = append(patches, patch{})
+    st.patches = append(st.patches, patch{})
 		words := strings.Split(lines[i], " ")
-		fmt.Sscanf(words[0], "#%d", &patches[i].id)
-		fmt.Sscanf(words[2], "%d,%d:", &patches[i].coor.x, &patches[i].coor.y)
-		fmt.Sscanf(words[3], "%dx%d", &patches[i].size.x, &patches[i].size.y)
-		st.claim_patch(patches[i])
+		fmt.Sscanf(words[0], "#%d", &st.patches[i].id)
+		fmt.Sscanf(words[2], "%d,%d:", &st.patches[i].coor.x, &st.patches[i].coor.y)
+		fmt.Sscanf(words[3], "%dx%d", &st.patches[i].size.x, &st.patches[i].size.y)
+		st.claim_patch(st.patches[i])
 	}
 
 	//st.fb.print_all()
 
 	fmt.Printf("total overlap: %v\n", st.overlap)
+	fmt.Printf("the ID of the only free patch is: %v\n", st.find_free_patch())
+}
+
+func (s *state) find_free_patch() int {
+  for i, _ := range s.patches {
+    if s.patches[i].overlap == false {
+      return s.patches[i].id
+    }
+  }
+  return -1
 }
 
 func (st *state) claim_patch(ptc patch) {
