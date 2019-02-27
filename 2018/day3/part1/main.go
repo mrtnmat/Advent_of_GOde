@@ -52,7 +52,7 @@ func main() {
 
 func (st *state) claim_patch(c coor, s size) {
 	var ySlice []rune
-	var xSlice [][1024]rune
+	var xSlice [][fbsize]rune
 
 	xSlice = st.fb[c.x : c.x+s.x]
 	for i, _ := range xSlice {
@@ -75,7 +75,7 @@ func (fb *fabric) print_all() {
 
 func (fb *fabric) print(c coor, s size) {
 	var ySlice []rune
-	var xSlice [][1024]rune
+	var xSlice [][fbsize]rune
 
 	xSlice = fb[c.x : c.x+s.x]
 	for i, _ := range xSlice {
