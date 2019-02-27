@@ -10,43 +10,34 @@ const (
 )
 
 type (
-	fabric [fbsize][fbsize]rune
+	fabric [fbsize][fbsize]int
 	coor   struct{ x, y int }
 	size   struct{ x, y int }
 	patch  struct {
-    id      int
+		id int
 		coor
 		size
-    overlap bool
+		overlap bool
 	}
 	state struct {
 		fb      fabric
-    patches []patch
+		patches []patch
 		overlap int
 	}
 )
 
 func main() {
 	var st state
-	var fb fabric
 	var lines []string
-
-	for i, _ := range fb {
-		for j, _ := range fb[i] {
-			fb[i][j] = '.'
-		}
-	}
-
-  st.fb = fb
 
 	lines = strings.Split(input, "\n")
 	for i, _ := range lines {
-    st.patches = append(st.patches, patch{})
+		st.patches = append(st.patches, patch{})
 		words := strings.Split(lines[i], " ")
 		fmt.Sscanf(words[0], "#%d", &st.patches[i].id)
 		fmt.Sscanf(words[2], "%d,%d:", &st.patches[i].coor.x, &st.patches[i].coor.y)
 		fmt.Sscanf(words[3], "%dx%d", &st.patches[i].size.x, &st.patches[i].size.y)
-		st.claim_patch(st.patches[i])
+		st.claim_patch(&st.patches[i])
 	}
 
 	//st.fb.print_all()
@@ -56,29 +47,33 @@ func main() {
 }
 
 func (s *state) find_free_patch() int {
-  for i, _ := range s.patches {
-    if s.patches[i].overlap == false {
-      return s.patches[i].id
-    }
-  }
-  return -1
+	for i, _ := range s.patches {
+		if s.patches[i].overlap == false {
+			fmt.Printf("%v\n", s.patches[i])
+			return s.patches[i].id
+		}
+	}
+	return -1
 }
 
-func (st *state) claim_patch(ptc patch) {
-	var ySlice []rune
-	var xSlice [][fbsize]rune
+func (st *state) claim_patch(ptc *patch) {
+	var ySlice []int
+	var xSlice [][fbsize]int
 
 	xSlice = st.fb[ptc.coor.x : ptc.coor.x+ptc.size.x]
 	for i, _ := range xSlice {
 		ySlice = xSlice[i][ptc.coor.y : ptc.coor.y+ptc.size.y]
 		for j, _ := range ySlice {
 			switch ySlice[j] {
-			case '.':
-				ySlice[j] = '/'
-			case '/':
-				ySlice[j] = '#'
+			case 0:
+				ySlice[j] = ptc.id
+			default:
 				st.overlap++
-        ptc.overlap = true
+				st.patches[ySlice[j]-1].overlap = true
+				fallthrough
+			case -1:
+				ySlice[j] = -1
+				ptc.overlap = true
 			}
 		}
 	}
@@ -89,12 +84,23 @@ func (fb *fabric) print_all() {
 }
 
 func (fb *fabric) print(c coor, s size) {
-	var ySlice []rune
-	var xSlice [][fbsize]rune
+	var ySlice []int
+	var xSlice [][fbsize]int
 
 	xSlice = fb[c.x : c.x+s.x]
 	for i, _ := range xSlice {
 		ySlice = xSlice[i][c.y : c.y+s.y]
-		fmt.Printf("%s\n", string(ySlice))
+		line := make([]byte, 0, fbsize)
+		for _, e := range ySlice {
+			switch e {
+			case -1:
+				line = append(line, '#')
+			case 0:
+				line = append(line, '.')
+			default:
+				line = append(line, '\\')
+			}
+		}
+		fmt.Printf("%s\n", line)
 	}
 }
