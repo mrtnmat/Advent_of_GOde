@@ -72,6 +72,6 @@ func (fb *fabric) print(c coor, s size) {
 	xSlice = fb[c.x : c.x+s.x]
 	for i, _ := range xSlice {
 		ySlice = xSlice[i][c.y : c.y+s.y]
-    fmt.Printf("%s\n", string(ySlice))
+		fmt.Printf("%s\n", string(ySlice))
 	}
 }
