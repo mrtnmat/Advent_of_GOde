@@ -37,10 +37,10 @@ func main() {
 		fmt.Sscanf(words[0], "#%d", &st.patches[i].id)
 		fmt.Sscanf(words[2], "%d,%d:", &st.patches[i].coor.x, &st.patches[i].coor.y)
 		fmt.Sscanf(words[3], "%dx%d", &st.patches[i].size.x, &st.patches[i].size.y)
-		st.claim_patch(&st.patches[i])
+		st.apply_patch(&st.patches[i])
 	}
 
-	//st.fb.print_all()
+	st.fb.print_all()
 
 	fmt.Printf("total overlap: %v\n", st.overlap)
 	fmt.Printf("the ID of the only free patch is: %v\n", st.find_free_patch())
@@ -56,7 +56,7 @@ func (s *state) find_free_patch() int {
 	return -1
 }
 
-func (st *state) claim_patch(ptc *patch) {
+func (st *state) apply_patch(ptc *patch) {
 	var ySlice []int
 	var xSlice [][fbsize]int
 
