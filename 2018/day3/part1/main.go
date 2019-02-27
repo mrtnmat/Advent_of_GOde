@@ -47,7 +47,7 @@ func main() {
 
 	st.fb.print_all()
 
-	fmt.Print("total overlap: %v\n", st.overlap)
+	fmt.Printf("total overlap: %v\n", st.overlap)
 }
 
 func (st *state) claim_patch(c coor, s size) {
