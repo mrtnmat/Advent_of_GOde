@@ -5,8 +5,12 @@ import (
 	"strings"
 )
 
+const (
+	fbsize int = 1024
+)
+
 type (
-	fabric [1024][1024]rune
+	fabric [fbsize][fbsize]rune
 	coor   struct{ x, y int }
 	size   struct{ x, y int }
 	patch  struct {
@@ -41,7 +45,7 @@ func main() {
 		st.claim_patch(ptc.coor, ptc.size)
 	}
 
-	st.fb.print(coor{0, 0}, size{100, 100})
+	st.fb.print_all()
 
 	fmt.Print("total overlap: %v\n", st.overlap)
 }
@@ -63,6 +67,10 @@ func (st *state) claim_patch(c coor, s size) {
 			}
 		}
 	}
+}
+
+func (fb *fabric) print_all() {
+	fb.print(coor{0, 0}, size{fbsize, fbsize})
 }
 
 func (fb *fabric) print(c coor, s size) {
