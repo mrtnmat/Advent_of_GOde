@@ -36,7 +36,7 @@ func main() {
 	naps.parse_rec(rec)
 	guards = make(guardslist)
 	for i, _ := range naps {
-		naps[i].add_to_histogram(&guards)
+		naps[i].add_to_histogram(guards)
 	}
 	ans.sleepiest = guards.sleepiest_guard()
 	fmt.Printf("The sleepiest guard is %v\n", ans.sleepiest.id)
@@ -45,15 +45,15 @@ func main() {
 	fmt.Printf("The answer is %v\n", ans.sleepiest.id*ans.sleepiest.sleepiest_min())
 }
 
-func (gl *guardslist) new_guard(id uint) {
+func (gl guardslist) new_guard(id uint) {
 	g := new(guard)
 	g.id = id
-	(*gl)[id] = g
+	gl[id] = g
 }
 
-func (gl *guardslist) sleepiest_guard() *guard {
+func (gl guardslist) sleepiest_guard() *guard {
 	var g *guard
-	for _, e := range *gl {
+	for _, e := range gl {
 		if g == nil {
 			g = e
 		} else if e.sleep_time() > g.sleep_time() {
@@ -81,12 +81,12 @@ func (g *guard) sleepiest_min() uint {
 	return uint(max)
 }
 
-func (n *nap) add_to_histogram(gl *guardslist) {
+func (n *nap) add_to_histogram(gl guardslist) {
 	var g *guard
-	if (*gl)[n.id] == nil {
+	if gl[n.id] == nil {
 		gl.new_guard(n.id)
 	}
-	g = (*gl)[n.id]
+	g = gl[n.id]
 
 	for i := n.start; i < n.end; i++ {
 		g.histogram[i]++
