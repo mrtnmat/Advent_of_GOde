@@ -7,6 +7,7 @@ import (
 type (
 	guard struct {
     id uint
+    histogram [60]uint
 	}
 	guardslist map[uint]*guard
 	answer     struct {
@@ -20,9 +21,16 @@ func main() {
 		guards guardslist
 	)
   guards = make(guardslist)
-  guards[0] = &guard{10}
+  guards.new_guard(12)
+  guards.new_guard(10)
 	ans.sleepiest = guards.sleepiest_guard()
 	fmt.Printf("The answer is %v\n", ans.sleepiest.id*ans.sleepiest.sleepiest_min())
+}
+
+func (gl *guardslist) new_guard(id uint) {
+  g := new(guard)
+  g.id = id
+  (*gl)[id] = g
 }
 
 func (gl *guardslist) sleepiest_guard() *guard {
@@ -30,7 +38,7 @@ func (gl *guardslist) sleepiest_guard() *guard {
 	for _, e := range *gl {
     if g == nil {
       g = e
-    } else if e.sleep_time() < g.sleep_time() {
+    } else if e.sleep_time() > g.sleep_time() {
       g = e
     }
 	}
@@ -38,7 +46,11 @@ func (gl *guardslist) sleepiest_guard() *guard {
 }
 
 func (g *guard) sleep_time() uint {
-	return 4
+  var t uint
+  for _, e := range g.histogram {
+    t += e
+  }
+  return t
 }
 
 func (g *guard) sleepiest_min() uint {
