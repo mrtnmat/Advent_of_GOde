@@ -6,7 +6,6 @@ import (
 )
 
 const (
-	max_naps = 32
 )
 
 type (
