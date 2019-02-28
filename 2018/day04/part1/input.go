@@ -21,8 +21,7 @@ const input string = `[1518-11-01 00:00] Guard #10 begins shift
 [1518-11-05 00:55] wakes up`
 */
 
-const input string =
-`[1518-09-28 00:56] wakes up
+const input string = `[1518-09-28 00:56] wakes up
 [1518-10-15 00:05] falls asleep
 [1518-02-15 00:58] wakes up
 [1518-08-26 00:51] wakes up
