@@ -24,11 +24,24 @@ func main() {
 	var (
 		ans    answer
 		guards guardslist
+    naps   []nap
 	)
   guards = make(guardslist)
-  guards.new_guard(12)
+  guards.new_guard(99)
   guards.new_guard(10)
+  naps = append(naps, nap{10, 5, 25})
+  naps = append(naps, nap{10, 30, 55})
+  naps = append(naps, nap{99, 40, 50})
+  naps = append(naps, nap{10, 24, 29})
+  naps = append(naps, nap{99, 36, 46})
+  naps = append(naps, nap{99, 45, 55})
+  for i, _ := range naps {
+    naps[i].add_to_histogram(&guards)
+  }
 	ans.sleepiest = guards.sleepiest_guard()
+	fmt.Printf("The sleepiest guard is %v\n", ans.sleepiest.id)
+	fmt.Printf("%v\n", ans.sleepiest.histogram)
+	fmt.Printf("He slept the most during minute %v\n", ans.sleepiest.sleepiest_min())
 	fmt.Printf("The answer is %v\n", ans.sleepiest.id*ans.sleepiest.sleepiest_min())
 }
 
@@ -69,8 +82,13 @@ func (g *guard) sleepiest_min() uint {
 }
 
 func (n *nap) add_to_histogram(gl *guardslist) {
-  g := (*gl)[n.id]
-  for i, _ := range g.histogram {
+  var g *guard
+  if (*gl)[n.id] == nil {
+    panic("nonexistant guard")
+  } else {
+    g = (*gl)[n.id]
+  }
+  for i := n.start; i < n.end; i++ {
     g.histogram[i]++
   }
 }
