@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"sort"
 )
 
 const (
@@ -30,6 +31,8 @@ type (
 		end   min
 	}
 
+  input_text [][]string
+
 	status struct {
 		guardlist
 		current   *guard
@@ -43,13 +46,20 @@ func main() {
 	var (
 		state status
 		lines []string
+    split_lines input_text
 	)
 
 	state.guardlist = make(map[guard_id]*guard)
 	lines = strings.Split(input, "\n")
+  for i, _ := range lines {
+		split_lines = append(split_lines, strings.Split(lines[i], " "))
+  }
+  //sort lines
+  split_lines.sort()
 
-	for i, _ := range lines {
-		words := strings.Split(lines[i], " ")
+	for _, words := range split_lines {
+    /*
+    fmt.Printf("%v\n", words)
 		switch {
 		case words[2] == "Guard":
 			var id guard_id
@@ -73,7 +83,9 @@ func main() {
 			//wake current guard
 			state.current.wake(s)
 		}
+    */
 	}
+  /*
 	for _, e := range state.guardlist {
 		e.compute_histogram()
 		e.compute_sleeptotal()
@@ -82,6 +94,7 @@ func main() {
 	state.sleepiest = state.guardlist.sleepiest()
 	fmt.Printf("%v is the sleepiest guard\n", state.sleepiest.id)
 	fmt.Printf("he slept the most during minute %v\n", state.sleepiest.hs.highest())
+  */
 }
 
 func (hs *sleepstogram) highest() min {
@@ -132,4 +145,10 @@ func (gl *guardlist) sleepiest() *guard {
 func (gl *guardlist) add_guard(id guard_id) {
 	(*gl)[id] = new(guard)
 	(*gl)[id].id = id
+}
+
+func (inp *input_text) sort() {
+  sort.Slice(*inp, func(i, j int) bool {
+    return (*inp)[i][0] < (*inp)[j][0] || (*inp)[i][1] < (*inp)[j][1] && (*inp)[i][0] == (*inp)[j][0]
+  })
 }
