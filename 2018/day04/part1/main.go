@@ -13,8 +13,7 @@ type (
 		histogram [60]uint
 	}
 
-	napslist []nap
-	nap      struct {
+	nap struct {
 		id    uint
 		start uint
 		end   uint
@@ -28,12 +27,12 @@ func main() {
 	var (
 		ans    answer
 		guards guardslist
-		naps   napslist
+		naps   []nap
 		rec    []string
 	)
 	rec = strings.Split(input, "\n")
 	sort.Strings(rec)
-	naps.parse_rec(rec)
+	naps = parse_rec(rec)
 	guards = make(guardslist)
 	for i, _ := range naps {
 		naps[i].add_to_histogram(guards)
@@ -93,6 +92,32 @@ func (n *nap) add_to_histogram(gl guardslist) {
 	}
 }
 
+func parse_rec(rec []string) []nap {
+	var naps []nap
+	var buf []string
+	var pn *nap
+	var cur uint
+
+	naps = make([]nap, 0, len(rec)/2)
+
+	for _, e := range rec {
+		buf = strings.Split(e, " ")
+		switch buf[2] {
+		case "Guard":
+			fmt.Sscanf(buf[3], "#%d", &cur)
+		case "falls":
+			pn = new(nap)
+			pn.id = cur
+			fmt.Sscanf(buf[1], "00:%d", &pn.start)
+		case "wakes":
+			fmt.Sscanf(buf[1], "00:%d", &pn.end)
+			naps = append(naps, *pn)
+		}
+	}
+	return naps
+}
+
+/*
 func (nl *napslist) parse_rec(rec []string) {
 	var buf []string
 	var pn *nap
@@ -113,3 +138,4 @@ func (nl *napslist) parse_rec(rec []string) {
 		}
 	}
 }
+*/
