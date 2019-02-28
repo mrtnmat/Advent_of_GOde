@@ -2,20 +2,24 @@ package main
 
 import (
 	"fmt"
+	"sort"
+	"strings"
 )
 
 type (
-	guard struct {
+	guardslist map[uint]*guard
+	guard      struct {
 		id        uint
 		histogram [60]uint
 	}
-	nap struct {
+
+	napslist []nap
+	nap      struct {
 		id    uint
 		start uint
 		end   uint
 	}
-	guardslist map[uint]*guard
-	answer     struct {
+	answer struct {
 		sleepiest *guard
 	}
 )
@@ -24,17 +28,13 @@ func main() {
 	var (
 		ans    answer
 		guards guardslist
-		naps   []nap
+		naps   napslist
+		rec    []string
 	)
+	rec = strings.Split(input, "\n")
+	sort.Strings(rec)
+	naps.parse_rec(rec)
 	guards = make(guardslist)
-	guards.new_guard(99)
-	guards.new_guard(10)
-	naps = append(naps, nap{10, 5, 25})
-	naps = append(naps, nap{10, 30, 55})
-	naps = append(naps, nap{99, 40, 50})
-	naps = append(naps, nap{10, 24, 29})
-	naps = append(naps, nap{99, 36, 46})
-	naps = append(naps, nap{99, 45, 55})
 	for i, _ := range naps {
 		naps[i].add_to_histogram(&guards)
 	}
@@ -84,11 +84,32 @@ func (g *guard) sleepiest_min() uint {
 func (n *nap) add_to_histogram(gl *guardslist) {
 	var g *guard
 	if (*gl)[n.id] == nil {
-		panic("nonexistant guard")
-	} else {
-		g = (*gl)[n.id]
+		gl.new_guard(n.id)
 	}
+	g = (*gl)[n.id]
+
 	for i := n.start; i < n.end; i++ {
 		g.histogram[i]++
+	}
+}
+
+func (nl *napslist) parse_rec(rec []string) {
+	var buf []string
+	var pn *nap
+	var cur uint
+
+	for _, e := range rec {
+		buf = strings.Split(e, " ")
+		switch buf[2] {
+		case "Guard":
+			fmt.Sscanf(buf[3], "#%d", &cur)
+		case "falls":
+			pn = new(nap)
+			pn.id = cur
+			fmt.Sscanf(buf[1], "00:%d", &pn.start)
+		case "wakes":
+			fmt.Sscanf(buf[1], "00:%d", &pn.end)
+			*nl = append(*nl, *pn)
+		}
 	}
 }
