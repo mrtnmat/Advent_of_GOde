@@ -58,7 +58,6 @@ func main() {
   split_lines.sort()
 
 	for _, words := range split_lines {
-    /*
     fmt.Printf("%v\n", words)
 		switch {
 		case words[2] == "Guard":
@@ -83,9 +82,9 @@ func main() {
 			//wake current guard
 			state.current.wake(s)
 		}
+    /*
     */
 	}
-  /*
 	for _, e := range state.guardlist {
 		e.compute_histogram()
 		e.compute_sleeptotal()
@@ -94,6 +93,8 @@ func main() {
 	state.sleepiest = state.guardlist.sleepiest()
 	fmt.Printf("%v is the sleepiest guard\n", state.sleepiest.id)
 	fmt.Printf("he slept the most during minute %v\n", state.sleepiest.hs.highest())
+	fmt.Printf("the answer is: %v\n", uint(state.sleepiest.id) * uint(state.sleepiest.hs.highest()))
+  /*
   */
 }
 
