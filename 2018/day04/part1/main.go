@@ -9,6 +9,11 @@ type (
     id uint
     histogram [60]uint
 	}
+  nap struct {
+    id uint
+    start uint
+    end uint
+  }
 	guardslist map[uint]*guard
 	answer     struct {
 		sleepiest *guard
@@ -54,5 +59,18 @@ func (g *guard) sleep_time() uint {
 }
 
 func (g *guard) sleepiest_min() uint {
-  return 2
+  var max int
+  for i, e := range g.histogram {
+    if e > g.histogram[max] {
+      max = i
+    }
+  }
+  return uint(max)
+}
+
+func (n *nap) add_to_histogram(gl *guardslist) {
+  g := (*gl)[n.id]
+  for i, _ := range g.histogram {
+    g.histogram[i]++
+  }
 }
