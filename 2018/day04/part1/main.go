@@ -18,9 +18,9 @@ type (
 
 	guardlist map[guard_id]*guard
 	guard     struct {
-		id         guard_id
+		id          guard_id
 		sleep_total min
-		hs         sleepstogram
+		hs          sleepstogram
 		naps
 	}
 
@@ -33,8 +33,8 @@ type (
 
 	status struct {
 		guardlist
-		current *guard
-    sleepiest *guard
+		current   *guard
+		sleepiest *guard
 	}
 )
 
@@ -75,43 +75,43 @@ func main() {
 			state.current.wake(s)
 		}
 	}
-  for _, e := range state.guardlist {
-    e.compute_histogram()
-    e.compute_sleeptotal()
-    //fmt.Printf("%v\n", e)
-  }
-  state.sleepiest = state.guardlist.sleepiest()
-  fmt.Printf("%v is the sleepiest guard\n", state.sleepiest.id)
-  fmt.Printf("he slept the most during minute %v\n", state.sleepiest.hs.highest())
+	for _, e := range state.guardlist {
+		e.compute_histogram()
+		e.compute_sleeptotal()
+		//fmt.Printf("%v\n", e)
+	}
+	state.sleepiest = state.guardlist.sleepiest()
+	fmt.Printf("%v is the sleepiest guard\n", state.sleepiest.id)
+	fmt.Printf("he slept the most during minute %v\n", state.sleepiest.hs.highest())
 }
 
 func (hs *sleepstogram) highest() min {
-  var h min
-  for i, e := range (*hs) {
-    if e > (*hs)[h] {
-      h = i
-    }
-  }
-  return h
+	var h min
+	for i, e := range *hs {
+		if e > (*hs)[h] {
+			h = i
+		}
+	}
+	return h
 }
 
 func (g *guard) compute_sleeptotal() {
-  for _, e := range g.hs {
-    g.sleep_total += e
-  }
+	for _, e := range g.hs {
+		g.sleep_total += e
+	}
 }
 
 func (g *guard) compute_histogram() {
 	g.hs = sleepstogram(make(map[min]min))
-  for _, n := range g.naps {
-    for i := n.start; i < n.end; i++ {
-      g.hs[i]++
-    }
-  }
+	for _, n := range g.naps {
+		for i := n.start; i < n.end; i++ {
+			g.hs[i]++
+		}
+	}
 }
 
 func (g *guard) wake(end min) {
-	g.naps[len(g.naps) - 1].end = end
+	g.naps[len(g.naps)-1].end = end
 }
 
 func (g *guard) sleep(start min) {
@@ -119,15 +119,15 @@ func (g *guard) sleep(start min) {
 }
 
 func (gl *guardlist) sleepiest() *guard {
-  var pg *guard
-  for _, e := range (*gl) {
-    if pg == nil {
-      pg = e
-    } else if e.sleep_total > pg.sleep_total {
-      pg = e
-    }
-  }
-  return pg
+	var pg *guard
+	for _, e := range *gl {
+		if pg == nil {
+			pg = e
+		} else if e.sleep_total > pg.sleep_total {
+			pg = e
+		}
+	}
+	return pg
 }
 
 func (gl *guardlist) add_guard(id guard_id) {
